@@ -1,18 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private Joystick joystick;
+    private Vector3 movement;
 
-    // Update is called once per frame
-    void Update()
+    private void Update ()
     {
-        
+        movement.x = joystick.Horizontal();
+        movement.z = joystick.Vertical();
+
+        transform.Translate(movement * moveSpeed * Time.deltaTime, Space.World);
     }
 }
