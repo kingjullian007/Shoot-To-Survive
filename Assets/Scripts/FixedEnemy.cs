@@ -6,10 +6,15 @@ public class FixedEnemy : Enemy
     [SerializeField] private float shootingInterval = 0.2f;
     private float shootStartTime;
     [SerializeField] private float rotationSpeed = 2f; // Speed at which the enemy rotates towards the player
+    [SerializeField] private float attackRange = 15f; // Maximum range for attacking
 
     protected override void Update ()
     {
         base.Update();
+        if (!IsPlayerInRange())
+        {
+            return;
+        }
         RotateTowardsPlayer();
         if (Time.time > shootStartTime + shootingInterval)
         {
@@ -18,14 +23,21 @@ public class FixedEnemy : Enemy
         }
     }
 
-    private void RotateTowardsPlayer ()
+    private bool IsPlayerInRange ()
     {
         if (playerTransform != null)
         {
-            var direction = ( playerTransform.position - transform.position ).normalized;
-            var lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+            var distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
+            return distanceToPlayer <= attackRange;
         }
+        return false;
+    }
+
+    private void RotateTowardsPlayer ()
+    {
+        var direction = ( playerTransform.position - transform.position ).normalized;
+        var lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
     }
 
     protected override void Attack ()

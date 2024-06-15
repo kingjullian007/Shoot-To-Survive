@@ -49,6 +49,7 @@ public abstract class Enemy : MonoBehaviour
         if (healthBar != null)
         {
             healthBar.value = currentHealth / maxHealth;
+            Mathf.Clamp(healthBar.value, 0f, maxHealth);
         }
     }
 

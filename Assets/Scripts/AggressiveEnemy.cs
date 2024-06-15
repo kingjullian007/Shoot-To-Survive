@@ -58,6 +58,7 @@ public class EnemyAggressive : Enemy
         }
     }
 
+
     protected override void Attack ()
     {
         // This method can be used for additional attack behaviors if needed

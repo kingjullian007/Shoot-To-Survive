@@ -11,7 +11,7 @@ public class DefenseZone : MonoBehaviour
         {
             enemiesInZone.Add(other.gameObject);
             // Handle shooting bullets or other defense mechanisms
-            Debug.Log("One enemy detected!");
+            //Debug.Log("One enemy detected!");
         }
     }
 
@@ -21,8 +21,7 @@ public class DefenseZone : MonoBehaviour
         {
             enemiesInZone.Remove(other.gameObject);
             // Handle stopping shooting or other defense mechanisms
-            Debug.Log("One enemy exited!");
-
+            //Debug.Log("One enemy exited!");
         }
     }
 
