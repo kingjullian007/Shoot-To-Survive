@@ -1,9 +1,23 @@
+using System.Linq;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private Joystick joystick;
+    private Transform playerTransform;
+    private DefenseZone defenseZone;
+    [SerializeField] private Transform bulletSpawnPoint;
+    [SerializeField] private float shootingInterval = 0.5f;
+    private float shootStartTime;
+    [SerializeField] private float bulletSpeed;
+
+    private void Start ()
+    {
+        //Caching the transform for optimisation purpose
+        playerTransform = transform;
+        defenseZone = GetComponentInChildren<DefenseZone>();
+    }
 
     private void Update ()
     {
@@ -18,11 +32,33 @@ public class PlayerController : MonoBehaviour
         if (moveDirection != Vector3.zero)
         {
             // Rotate the player to face the movement direction
-            transform.rotation = Quaternion.LookRotation(moveDirection);
+            playerTransform.rotation = Quaternion.LookRotation(moveDirection);
         }
 
         // Apply movement
-        transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.World);
+        playerTransform.Translate(moveSpeed * Time.deltaTime * moveDirection, Space.World);
+
+        //Shooting mechanism
+        ScanAndShoot();
+    }
+
+    private void ScanAndShoot ()
+    {
+        if(defenseZone == null)
+        {
+            Debug.Log("Defence zone not detected! Try adding one first to the player");
+            return;
+        }
+
+        if(defenseZone.GetEnemiesInZone().Count()>0)
+        {
+            if(Time.time > shootStartTime + shootingInterval)
+            {
+                shootStartTime = Time.time;
+                Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullets, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+                Debug.Log("Boom");
+            }
+        }
     }
 }
 
