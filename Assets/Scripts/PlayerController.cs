@@ -43,15 +43,15 @@ public class PlayerController : MonoBehaviour
 
     private void ScanAndShoot ()
     {
-        if(defenseZone == null)
+        if (defenseZone == null)
         {
             Debug.Log("Defence zone not detected! Try adding one first to the player");
             return;
         }
 
-        if(defenseZone.GetEnemiesInZone().Count()>0)
+        if (defenseZone.GetEnemiesInZone().Count() > 0)
         {
-            if(Time.time > shootStartTime + shootingInterval)
+            if (Time.time > shootStartTime + shootingInterval)
             {
                 shootStartTime = Time.time;
                 Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullet_Player, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
@@ -60,4 +60,3 @@ public class PlayerController : MonoBehaviour
         }
     }
 }
-

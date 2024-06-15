@@ -8,6 +8,7 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] private Slider healthBar;
     protected Transform playerTransform;
     private Transform healthBarCanvas;
+    private DefenseZone defenseZone;
 
     protected virtual void Start ()
     {
@@ -16,11 +17,9 @@ public abstract class Enemy : MonoBehaviour
 
         // Find the HealthBarCanvas child and cache its transform
         healthBarCanvas = healthBar.transform.parent;
-        //UpdateHealthBar();
-        //if (healthBar != null)
-        //{
-        //    healthBar.value = healthBar.maxValue;
-        //}
+
+        // Find the DefenseZone component in the player's hierarchy
+        defenseZone = Singleton.Instance.PlayerControllerInstance.GetComponentInChildren<DefenseZone>();
     }
 
     protected virtual void Update ()
@@ -42,15 +41,15 @@ public abstract class Enemy : MonoBehaviour
             Die();
         }
         UpdateHealthBar();
-        //Debug.Log("I am Enemy & my currentHealth: " + currentHealth);
+        Debug.Log("I am Enemy & my currentHealth: " + currentHealth);
     }
 
     private void UpdateHealthBar ()
     {
         if (healthBar != null)
         {
-            currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);  // Clamp currentHealth first
             healthBar.value = currentHealth / maxHealth;
+            Mathf.Clamp(healthBar.value, 0f, 1f);
         }
     }
 
@@ -58,6 +57,13 @@ public abstract class Enemy : MonoBehaviour
     {
         // Drop coins
         Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Coins, transform.position, Quaternion.identity);
+
+        // Remove from the defense zone list
+        if (defenseZone != null)
+        {
+            defenseZone.RemoveEnemyFromZone(gameObject);
+        }
+
         Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
     }
 

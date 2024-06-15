@@ -27,7 +27,12 @@ public class DefenseZone : MonoBehaviour
 
     public List<GameObject> GetEnemiesInZone ()
     {
-        Debug.Log("enemiesInZone: "+ enemiesInZone.Count);
+        Debug.Log("enemiesInZone: " + enemiesInZone.Count);
         return enemiesInZone;
+    }
+
+    public void RemoveEnemyFromZone (GameObject enemy)
+    {
+        enemiesInZone.Remove(enemy);
     }
 }
