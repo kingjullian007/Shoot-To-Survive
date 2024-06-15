@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
             if(Time.time > shootStartTime + shootingInterval)
             {
                 shootStartTime = Time.time;
-                Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullets, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+                Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullet_Player, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
                 Debug.Log("Boom");
             }
         }

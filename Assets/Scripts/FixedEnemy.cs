@@ -42,7 +42,7 @@ public class FixedEnemy : Enemy
 
     protected override void Attack ()
     {
-        var bullet = Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullets, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+        var bullet = Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullet_Enemy, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
         // Implement bullet movement logic here
     }
 }
