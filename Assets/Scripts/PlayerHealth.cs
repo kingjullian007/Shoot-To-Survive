@@ -11,8 +11,6 @@ public class PlayerHealth : Health
         {
             healthSlider.value = healthSlider.maxValue;
         }
-
-        healthSlider.value = healthSlider.maxValue / 2;
     }
     protected override void Die ()
     {

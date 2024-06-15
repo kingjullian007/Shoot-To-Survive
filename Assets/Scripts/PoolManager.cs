@@ -5,7 +5,8 @@ public enum SpawnObjectKey
 {
     Bullets,
     Enemy_Aggressive,
-    Enemy_Fixed
+    Enemy_Fixed,
+    Coins
 }
 
 [System.Serializable]
