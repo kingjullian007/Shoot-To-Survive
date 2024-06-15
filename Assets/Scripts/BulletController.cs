@@ -29,9 +29,21 @@ public class BulletController : MonoBehaviour
             }
             Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
         }
+       
+        else if (other.CompareTag("Player"))
+        {
+            var player = other.GetComponent<PlayerHealth>();
+            if (player != null)
+            {
+                player.TakeDamage((int)damage);
+            }
+            Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
+        }
+
         else if (other.CompareTag("DeadEnd"))
         {
             Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
         }
+
     }
 }

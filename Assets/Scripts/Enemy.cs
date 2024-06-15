@@ -42,14 +42,15 @@ public abstract class Enemy : MonoBehaviour
             Die();
         }
         UpdateHealthBar();
+        //Debug.Log("I am Enemy & my currentHealth: " + currentHealth);
     }
 
     private void UpdateHealthBar ()
     {
         if (healthBar != null)
         {
+            currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);  // Clamp currentHealth first
             healthBar.value = currentHealth / maxHealth;
-            Mathf.Clamp(healthBar.value, 0f, maxHealth);
         }
     }
 

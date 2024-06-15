@@ -5,12 +5,11 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private Joystick joystick;
-    private Transform playerTransform;
-    private DefenseZone defenseZone;
     [SerializeField] private Transform bulletSpawnPoint;
     [SerializeField] private float shootingInterval = 0.5f;
     private float shootStartTime;
-    [SerializeField] private float bulletSpeed;
+    private Transform playerTransform;
+    private DefenseZone defenseZone;
 
     private void Start ()
     {

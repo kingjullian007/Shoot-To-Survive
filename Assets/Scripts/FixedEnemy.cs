@@ -8,6 +8,11 @@ public class FixedEnemy : Enemy
     [SerializeField] private float rotationSpeed = 2f; // Speed at which the enemy rotates towards the player
     [SerializeField] private float attackRange = 15f; // Maximum range for attacking
 
+
+    protected override void Start ()
+    {
+        base.Start();
+    }
     protected override void Update ()
     {
         base.Update();
