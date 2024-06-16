@@ -6,9 +6,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private List<Transform> spawnTransforms = new List<Transform>();
     [SerializeField] private float spawnInterval = 5f;
     private float lastSpawnTime;
-    private int maxEnemies = 30; // Maximum number of enemies
-    private int aggressiveEnemyCount = 0;
-    private int fixedEnemyCount = 0;
+    private int maxEnemies = 30; // Maximum number of enemies on the ground at any time
     private List<GameObject> activeEnemies = new();
     private HashSet<Vector3> occupiedPositions = new();
     private Transform playerTransform;
@@ -36,41 +34,66 @@ public class SpawnManager : MonoBehaviour
 
     private void SpawnEnemies ()
     {
-        var totalEnemies = aggressiveEnemyCount + fixedEnemyCount;
+        var totalEnemies = activeEnemies.Count;
 
+        // Limit the number of enemies on the ground at any time to maxEnemies
         if (totalEnemies >= maxEnemies)
         {
             return;
         }
 
+        // Calculate how many enemies we can still spawn
         var enemiesToSpawn = Mathf.Min(5, maxEnemies - totalEnemies);
+
         for (var i = 0; i < enemiesToSpawn; i++)
         {
-            var spawnIndex = Random.Range(0, spawnTransforms.Count);
-            var spawnPoint = spawnTransforms[spawnIndex];
-
-            if (occupiedPositions.Contains(spawnPoint.position) || Vector3.Distance(spawnPoint.position, playerTransform.position) < 5f)
+            var spawnPoint = GetValidSpawnPoint();
+            if (spawnPoint == null)
             {
-                continue;
+                // No valid spawn point found, stop spawning this cycle
+                break;
             }
 
-            var enemyType = ( aggressiveEnemyCount + 1 <= totalEnemies * 0.7f ) ? SpawnObjectKey.Enemy_Aggressive : SpawnObjectKey.Enemy_Fixed;
+            // Determine the ratio of aggressive to fixed enemies
+            var aggressiveEnemyCount = activeEnemies.FindAll(e => e.CompareTag("EnemyAggressive")).Count;
+            var fixedEnemyCount = activeEnemies.FindAll(e => e.CompareTag("EnemyFixed")).Count;
+            var aggressiveEnemyRatio = (float)aggressiveEnemyCount / maxEnemies;
+            var fixedEnemyRatio = (float)fixedEnemyCount / maxEnemies;
+
+            // Decide the type of enemy to spawn based on the ratios
+            SpawnObjectKey enemyType;
+            if (aggressiveEnemyRatio < 0.7f && fixedEnemyRatio < 0.3f)
+            {
+                enemyType = ( Random.value < 0.7f ) ? SpawnObjectKey.Enemy_Aggressive : SpawnObjectKey.Enemy_Fixed;
+            }
+            else if (aggressiveEnemyRatio >= 0.7f)
+            {
+                enemyType = SpawnObjectKey.Enemy_Fixed;
+            }
+            else
+            {
+                enemyType = SpawnObjectKey.Enemy_Aggressive;
+            }
 
             var enemy = poolManager.Spawn(enemyType, spawnPoint.position, spawnPoint.rotation);
             if (enemy != null)
             {
                 activeEnemies.Add(enemy);
                 occupiedPositions.Add(spawnPoint.position);
-                if (enemyType == SpawnObjectKey.Enemy_Aggressive)
-                {
-                    aggressiveEnemyCount++;
-                }
-                else
-                {
-                    fixedEnemyCount++;
-                }
             }
         }
+    }
+
+    private Transform GetValidSpawnPoint ()
+    {
+        foreach (var spawnPoint in spawnTransforms)
+        {
+            if (!occupiedPositions.Contains(spawnPoint.position) && Vector3.Distance(spawnPoint.position, playerTransform.position) >= 5f)
+            {
+                return spawnPoint;
+            }
+        }
+        return null;
     }
 
     public void RemoveEnemy (GameObject enemy)
@@ -79,14 +102,6 @@ public class SpawnManager : MonoBehaviour
         {
             activeEnemies.Remove(enemy);
             poolManager.DeSpawn(enemy);
-            if (enemy.CompareTag("EnemyAggressive"))
-            {
-                aggressiveEnemyCount--;
-            }
-            else if (enemy.CompareTag("EnemyFixed"))
-            {
-                fixedEnemyCount--;
-            }
             occupiedPositions.Remove(enemy.transform.position);
         }
     }
