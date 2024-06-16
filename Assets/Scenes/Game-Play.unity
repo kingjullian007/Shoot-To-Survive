@@ -1477,10 +1477,10 @@ MonoBehaviour:
   objectPoolItems:
   - key: 0
     prefab: {fileID: 6516870992184031136, guid: 0c8d8886663576048b2cfcd8668e1165, type: 3}
-    poolSize: 20
+    poolSize: 30
   - key: 1
     prefab: {fileID: 6516870992184031136, guid: afbb7e5fe6d6d294eb62fe55c1ab23af, type: 3}
-    poolSize: 25
+    poolSize: 20
   - key: 3
     prefab: {fileID: 4790463956870462799, guid: d08d786d2a23f534591899af5c61936c, type: 3}
     poolSize: 15
