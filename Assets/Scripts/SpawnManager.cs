@@ -7,15 +7,17 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private float spawnInterval = 5f;
     private float lastSpawnTime;
     private int maxEnemies = 30; // Maximum number of enemies on the ground at any time
-    private List<GameObject> activeEnemies = new();
-    private HashSet<Vector3> occupiedPositions = new();
+   
     private Transform playerTransform;
     private PoolManager poolManager;
+    private Spawn spawnInstance;
+    public Spawn SpawnInstance => spawnInstance;
 
     private void Start ()
     {
         playerTransform = Singleton.Instance.PlayerControllerInstance.transform;
         poolManager = Singleton.Instance.PoolManagerInstance;
+        spawnInstance = new(maxEnemies ,poolManager, spawnTransforms, playerTransform);
     }
 
     private void Update ()
@@ -28,11 +30,30 @@ public class SpawnManager : MonoBehaviour
         if (Time.time > lastSpawnTime + spawnInterval)
         {
             lastSpawnTime = Time.time;
-            SpawnEnemies();
+            spawnInstance.SpawnEnemies();
         }
     }
+}
 
-    private void SpawnEnemies ()
+public class Spawn
+{
+    private int maxEnemies;
+    private PoolManager poolManager;
+    private List<Transform> spawnTransforms;
+    private List<GameObject> activeEnemies;
+    private HashSet<Vector3> occupiedPositions;
+    private Transform playerTransform;
+
+    public Spawn(int maxEnemies, PoolManager poolManager, List<Transform> spawnTransforms, Transform playerTransform)
+    {
+        this.maxEnemies = maxEnemies;
+        this.poolManager = poolManager;
+        this.spawnTransforms = spawnTransforms;
+        this.playerTransform = playerTransform;
+        activeEnemies = new();
+        occupiedPositions = new();
+    }
+    public void SpawnEnemies ()
     {
         var totalEnemies = activeEnemies.Count;
 
@@ -103,6 +124,9 @@ public class SpawnManager : MonoBehaviour
             activeEnemies.Remove(enemy);
             poolManager.DeSpawn(enemy);
             occupiedPositions.Remove(enemy.transform.position);
+
+            // Debug log to track enemy removal
+            Debug.Log($"Removed {enemy.name}, Active Enemies: {activeEnemies.Count}");
         }
     }
 }
