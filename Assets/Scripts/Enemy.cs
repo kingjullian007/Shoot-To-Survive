@@ -35,7 +35,7 @@ public abstract class Enemy : MonoBehaviour
         currentHealth -= amount;
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
         UpdateHealthBar();
-        Debug.Log("I am Enemy & my currentHealth: " + currentHealth);
+        //Debug.Log("I am Enemy & my currentHealth: " + currentHealth);
 
         if (currentHealth <= 0)
         {

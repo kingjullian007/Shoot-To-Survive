@@ -28,36 +28,57 @@ public class EnemyAggressive : Enemy
 
     private void FollowPlayer ()
     {
-        if (playerTransform != null && Vector3.Distance(transform.position, playerTransform.position) > stopDistance)
+        if (playerTransform != null)
         {
-            navMeshAgent.SetDestination(playerTransform.position);
-            // Set animator parameter for movement
-            animator.SetFloat("Speed", navMeshAgent.velocity.magnitude);
-        }
-        else
-        {
-            navMeshAgent.ResetPath();
-            // Set animator parameter for idle or stopping
-            animator.SetFloat("Speed", 0f);
+            var distance = Vector3.Distance(transform.position, playerTransform.position);
+            if (distance > stopDistance)
+            {
+                navMeshAgent.SetDestination(playerTransform.position);
+                // Set animator parameter for movement
+                animator.SetFloat("Speed", navMeshAgent.velocity.magnitude);
+            }
+            else
+            {
+                navMeshAgent.ResetPath();
+                // Set animator parameter for idle or stopping
+                animator.SetFloat("Speed", 0f);
+                RotateTowardsPlayer(); // Rotate towards player when stopping
+            }
         }
     }
 
     private void AttackPlayerIfClose ()
     {
-        var distance = Vector3.Distance(transform.position, playerTransform.position);
-        if (playerTransform != null && distance <= stopDistance)
+        if (playerTransform != null)
         {
-            if (Time.time > lastAttackTime + attackInterval)
+            var distance = Vector3.Distance(transform.position, playerTransform.position);
+            if (distance <= stopDistance)
             {
-                lastAttackTime = Time.time;
-                // Trigger melee attack animation
-                animator.SetTrigger("MeleeAttack");
-                Debug.Log("Perform melee attack");
-                // Optionally, reduce player health or trigger an attack animation
+                RotateTowardsPlayer(); // Ensure rotation towards player when attacking
+                if (Time.time > lastAttackTime + attackInterval)
+                {
+                    lastAttackTime = Time.time;
+                    // Trigger melee attack animation
+                    animator.SetTrigger("MeleeAttack");
+                    Debug.Log("Perform melee attack");
+
+                    // Optionally, reduce player health or trigger an attack animation
+                    var playerHealth = playerTransform.GetComponent<PlayerHealth>();
+                    if (playerHealth != null)
+                    {
+                        playerHealth.TakeDamage(2); // Adjust damage value as needed
+                    }
+                }
             }
         }
     }
 
+    private void RotateTowardsPlayer ()
+    {
+        Vector3 direction = ( playerTransform.position - transform.position ).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * navMeshAgent.angularSpeed);
+    }
 
     protected override void Attack ()
     {
