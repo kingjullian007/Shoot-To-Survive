@@ -11,55 +11,61 @@ public class Singleton : MonoBehaviour
     private PoolManager poolManager;
     public PoolManager PoolManagerInstance => poolManager;
 
+    private ScoreCalculator scoreCalculator;
+    public ScoreCalculator ScoreCalculatorInstance => scoreCalculator;
+
+    private GameManager gameManager;
+    public GameManager GameManagerInstance => gameManager;
+
     private void Awake ()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
-
-            InitializeComponents();
-        }
-        else
-        {
-            Destroy(gameObject);
+          
+            InitializeInstance();
         }
     }
 
-    private void InitializeComponents ()
+    private void InitializeInstance ()
     {
 
         if (PlayerControllerInstance == null)
         {
-            //Debug.Log("PlayerController component not found on Singleton GameObject.");
             playerController = FindObjectOfType<PlayerController>();
         }
 
         if (PoolManagerInstance == null)
         {
-            //Debug.Log("PoolManager component not found on Singleton GameObject.");
             poolManager = FindObjectOfType<PoolManager>();
+        }
+
+        if(ScoreCalculatorInstance == null)
+        {
+            scoreCalculator = GetComponent<ScoreCalculator>();
+        }
+
+        if(GameManagerInstance == null)
+        {
+            gameManager = GetComponent<GameManager>();
         }
     }
 
     private void OnSceneLoaded (Scene scene, LoadSceneMode mode)
     {
-        // Reinitialize components if necessary
         if (PlayerControllerInstance == null || PoolManagerInstance == null)
         {
-            InitializeComponents();
+            InitializeInstance();
         }
     }
 
     private void OnEnable ()
     {
-        // Subscribe to the scene loaded event
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDisable ()
     {
-        // Unsubscribe from the scene loaded event
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }

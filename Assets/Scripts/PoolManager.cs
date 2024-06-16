@@ -20,29 +20,18 @@ public class ObjectPoolItem
 
 public class PoolManager : MonoBehaviour
 {
-    public static PoolManager Instance; // Singleton instance
-
     [SerializeField] private List<ObjectPoolItem> objectPoolItems;
     private Dictionary<SpawnObjectKey, Queue<GameObject>> objectPools;
 
     private void Awake ()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            InitializeObjectPools();
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        InitializeObjectPools();
     }
 
     private void InitializeObjectPools ()
     {
         objectPools = new Dictionary<SpawnObjectKey, Queue<GameObject>>();
 
-        // Create object pools for each item in the list
         foreach (var item in objectPoolItems)
         {
             CreateObjectPool(item.key, item.prefab, item.poolSize);
@@ -55,7 +44,6 @@ public class PoolManager : MonoBehaviour
         {
             objectPools[key] = new Queue<GameObject>();
 
-            // Populate the object pool with instances of the prefab
             for (var i = 0; i < poolSize; i++)
             {
                 var newObj = Instantiate(prefab);
@@ -69,26 +57,30 @@ public class PoolManager : MonoBehaviour
     {
         if (objectPools.ContainsKey(key))
         {
+            GameObject objToSpawn;
+
             if (objectPools[key].Count == 0)
             {
-                // If the pool is empty, create a new instance
-                Debug.LogWarning("Object pool for " + key + " is empty. Creating a new instance.");
-                var newObj = Instantiate(objectPoolItems.Find(item => item.key == key).prefab, position, rotation);
-                return newObj;
+                objToSpawn = Instantiate(objectPoolItems.Find(item => item.key == key).prefab, position, rotation);
             }
             else
             {
-                // Reuse an object from the pool
-                var objToSpawn = objectPools[key].Dequeue();
+                objToSpawn = objectPools[key].Dequeue();
                 objToSpawn.transform.position = position;
                 objToSpawn.transform.rotation = rotation;
                 objToSpawn.SetActive(true);
-                return objToSpawn;
             }
+
+            var enemy = objToSpawn.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.InitializeEnemy();
+            }
+
+            return objToSpawn;
         }
         else
         {
-            Debug.LogWarning("Object pool for " + key + " not found!");
             return null;
         }
     }
@@ -105,6 +97,5 @@ public class PoolManager : MonoBehaviour
                 return;
             }
         }
-        Debug.LogWarning("Object pool for " + poolKey + " not found!");
     }
 }

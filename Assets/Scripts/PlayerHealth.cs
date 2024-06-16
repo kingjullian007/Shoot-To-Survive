@@ -4,11 +4,11 @@ using UnityEngine.UI;
 public class PlayerHealth : MonoBehaviour
 {
     [SerializeField] private float maxHealth = 100;
-    private float currentHealth;
     [SerializeField] private Slider healthSlider;
-
     public float MaxHealth { get => maxHealth; private set => maxHealth = value; }
     public float CurrentHealth { get => currentHealth; private set => currentHealth = value; }
+
+    private float currentHealth;
 
     private void Start ()
     {
@@ -31,7 +31,6 @@ public class PlayerHealth : MonoBehaviour
         {
             Die();
         }
-
     }
 
     private void UpdateHealthUI ()
@@ -45,9 +44,7 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die ()
     {
-        // Handle death logic
-        Debug.Log("Player died!");
-        // Add game over logic or respawn logic here
+        GameEvents.GameOver?.Invoke();
     }
 
     public void SetHealthSlider (Slider slider)

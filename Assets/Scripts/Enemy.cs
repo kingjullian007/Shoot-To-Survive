@@ -8,38 +8,42 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] private Slider healthBar;
     protected Transform playerTransform;
     private Transform healthBarCanvas;
+    public bool isDead = false;
 
     protected virtual void Start ()
     {
-        currentHealth = maxHealth;
         playerTransform = Singleton.Instance.PlayerControllerInstance.transform;
-
-        // Find the HealthBarCanvas child and cache its transform
         healthBarCanvas = healthBar.transform.parent;
-        UpdateHealthBar(); // Initialize health bar
+        InitializeEnemy();
     }
 
     protected virtual void Update ()
     {
-        // Make the health bar face the camera
         if (healthBarCanvas != null)
         {
             healthBarCanvas.LookAt(Camera.main.transform);
         }
+    }
 
-        // Common enemy logic
+    public void InitializeEnemy ()
+    {
+        currentHealth = maxHealth;
+        isDead = false;
+        UpdateHealthBar();
     }
 
     public void TakeDamage (float amount)
     {
-        currentHealth -= amount;
-        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
-        UpdateHealthBar();
-        //Debug.Log("I am Enemy & my currentHealth: " + currentHealth);
-
-        if (currentHealth <= 0)
+        if (!isDead)
         {
-            Die();
+            currentHealth -= amount;
+            currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+            UpdateHealthBar();
+
+            if (currentHealth <= 0)
+            {
+                Die();
+            }
         }
     }
 
@@ -54,11 +58,17 @@ public abstract class Enemy : MonoBehaviour
 
     protected virtual void Die ()
     {
-        // Drop coins
+        isDead = true;
         Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Coins, transform.position, Quaternion.identity);
+
+        var spawnManager = FindObjectOfType<SpawnManager>();
+        if (spawnManager != null)
+        {
+            spawnManager.RemoveEnemy(gameObject);
+        }
+        GameEvents.EnemyDied?.Invoke();
         Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
     }
 
-    // Method for specific attack behavior to be overridden by subclasses
-    protected abstract void Attack ();
+    protected virtual void Attack () { }
 }

@@ -13,31 +13,28 @@ public class PlayerController : MonoBehaviour
 
     private void Start ()
     {
-        //Caching the transform for optimisation purpose
         playerTransform = transform;
         defenseZone = GetComponentInChildren<DefenseZone>();
     }
 
     private void Update ()
     {
-        // Get input from the joystick
+        if (Singleton.Instance.GameManagerInstance.CurrentState!= GameState.GamePlay)
+        {
+            return;
+        }
         var horizontalInput = joystick.Horizontal();
         var verticalInput = joystick.Vertical();
 
-        // Calculate the movement direction based on input
         var moveDirection = new Vector3(horizontalInput, 0f, verticalInput).normalized;
 
-        // Check if there is any movement input
         if (moveDirection != Vector3.zero)
         {
-            // Rotate the player to face the movement direction
             playerTransform.rotation = Quaternion.LookRotation(moveDirection);
         }
 
-        // Apply movement
         playerTransform.Translate(moveSpeed * Time.deltaTime * moveDirection, Space.World);
 
-        //Shooting mechanism
         ScanAndShoot();
     }
 
@@ -45,17 +42,39 @@ public class PlayerController : MonoBehaviour
     {
         if (defenseZone == null)
         {
-            Debug.Log("Defence zone not detected! Try adding one first to the player");
+            Debug.Log("Defense zone not detected! Try adding one first to the player");
             return;
         }
 
-        if (defenseZone.GetEnemiesInZone().Count() > 0)
+        var enemies = defenseZone.GetEnemiesInZone();
+
+        // Remove dead enemies from the list
+        enemies.RemoveAll(enemy => enemy == null || enemy.GetComponent<Enemy>().isDead); // Updated here
+
+        if (enemies.Count > 0)
         {
-            if (Time.time > shootStartTime + shootingInterval)
+            // Find the closest enemy
+            var closestEnemy = enemies.OrderBy(e => Vector3.Distance(playerTransform.position, e.transform.position)).FirstOrDefault();
+
+            if (closestEnemy != null)
             {
-                shootStartTime = Time.time;
-                Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullet_Player, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
-                Debug.Log("Boom");
+                // Calculate the direction to the closest enemy
+                var directionToEnemy = ( closestEnemy.transform.position - bulletSpawnPoint.position ).normalized;
+
+                // Smoothly rotate the player towards the closest enemy
+                var targetRotation = Quaternion.LookRotation(directionToEnemy);
+                playerTransform.rotation = Quaternion.Slerp(playerTransform.rotation, targetRotation, Time.deltaTime * 5f);
+
+                if (Time.time > shootStartTime + shootingInterval)
+                {
+                    // Spawn the bullet and set its direction
+                    var bullet = Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullet_Player, bulletSpawnPoint.position, Quaternion.LookRotation(directionToEnemy));
+
+                    // Optionally, you can adjust the bullet's forward direction
+                    bullet.transform.forward = directionToEnemy;
+
+                    shootStartTime = Time.time;
+                }
             }
         }
     }

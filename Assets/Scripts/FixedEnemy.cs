@@ -4,10 +4,9 @@ public class FixedEnemy : Enemy
 {
     [SerializeField] private Transform bulletSpawnPoint;
     [SerializeField] private float shootingInterval = 0.2f;
+    [SerializeField] private float rotationSpeed = 2f; 
+    [SerializeField] private float attackRange = 15f;
     private float shootStartTime;
-    [SerializeField] private float rotationSpeed = 2f; // Speed at which the enemy rotates towards the player
-    [SerializeField] private float attackRange = 15f; // Maximum range for attacking
-
 
     protected override void Start ()
     {
@@ -15,6 +14,11 @@ public class FixedEnemy : Enemy
     }
     protected override void Update ()
     {
+        if (Singleton.Instance.GameManagerInstance.CurrentState != GameState.GamePlay)
+        {
+            return;
+        }
+
         base.Update();
         if (!IsPlayerInRange())
         {
@@ -47,7 +51,6 @@ public class FixedEnemy : Enemy
 
     protected override void Attack ()
     {
-        var bullet = Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullet_Enemy, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
-        // Implement bullet movement logic here
+        Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullet_Enemy, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
     }
 }
