@@ -15,6 +15,11 @@ public class FixedEnemy : Enemy
     }
     protected override void Update ()
     {
+        if (Singleton.Instance.GameManagerInstance.CurrentState != GameState.GamePlay)
+        {
+            return;
+        }
+
         base.Update();
         if (!IsPlayerInRange())
         {
@@ -47,7 +52,6 @@ public class FixedEnemy : Enemy
 
     protected override void Attack ()
     {
-        var bullet = Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullet_Enemy, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
-        // Implement bullet movement logic here
+        Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullet_Enemy, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
     }
 }

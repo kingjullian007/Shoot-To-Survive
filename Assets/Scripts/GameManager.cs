@@ -26,12 +26,37 @@ public class GameManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
-    }
 
-    private void Start ()
-    {
         SetGameState(GameState.GamePlay); // Start the game in the GamePlay state
     }
+
+    private void OnEnable ()
+    {
+        GameEvents.GameOver += OnGameOver;
+        GameEvents.GameStart += OnGameStart;
+
+    }
+
+    private void OnDisable ()
+    {
+        GameEvents.GameOver -= OnGameOver;
+        GameEvents.GameStart += OnGameStart;
+    }
+
+    private void OnGameStart ()
+    {
+        //SetGameState(GameState.GamePlay);
+    }
+
+    private void OnGameOver ()
+    {
+        SetGameState(GameState.GameOver);
+    }
+
+    //private void Start ()
+    //{
+    //    SetGameState(GameState.GamePlay); // Start the game in the GamePlay state
+    //}
 
     public void SetGameState (GameState state)
     {

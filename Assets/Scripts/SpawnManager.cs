@@ -11,6 +11,12 @@ public class SpawnManager : MonoBehaviour
     private int fixedEnemyCount = 0;
     private List<GameObject> activeEnemies = new List<GameObject>();
     private HashSet<Vector3> occupiedPositions = new HashSet<Vector3>(); // Track occupied spawn positions
+    private Transform playerTransform;
+
+    private void Start ()
+    {
+        playerTransform = Singleton.Instance.PlayerControllerInstance.transform;
+    }
 
     private void Update ()
     {
@@ -40,8 +46,8 @@ public class SpawnManager : MonoBehaviour
             int spawnIndex = Random.Range(0, spawnTransforms.Count);
             Transform spawnPoint = spawnTransforms[spawnIndex];
 
-            // Check if the spawn point is already occupied
-            if (occupiedPositions.Contains(spawnPoint.position))
+            // Check if the spawn point is already occupied or player is too close
+            if (occupiedPositions.Contains(spawnPoint.position) || Vector3.Distance(spawnPoint.position, playerTransform.position) < 5f)
             {
                 continue; // Skip this spawn point
             }

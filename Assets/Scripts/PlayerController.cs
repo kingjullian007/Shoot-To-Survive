@@ -20,6 +20,10 @@ public class PlayerController : MonoBehaviour
 
     private void Update ()
     {
+        if (Singleton.Instance.GameManagerInstance.CurrentState!= GameState.GamePlay)
+        {
+            return;
+        }
         // Get input from the joystick
         var horizontalInput = joystick.Horizontal();
         var verticalInput = joystick.Vertical();

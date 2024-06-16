@@ -15,12 +15,15 @@ public class EnemyAggressive : Enemy
         base.Start();
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.stoppingDistance = stopDistance;
-
         animator = GetComponent<Animator>();
     }
 
     protected override void Update ()
     {
+        if (Singleton.Instance.GameManagerInstance.CurrentState != GameState.GamePlay)
+        {
+            return;
+        }
         base.Update();
         FollowPlayer();
         AttackPlayerIfClose();
