@@ -4,13 +4,13 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField] private List<Transform> spawnTransforms = new List<Transform>();
-    [SerializeField] private float spawnInterval = 2f;
+    [SerializeField] private float spawnInterval = 5f;
     private float lastSpawnTime;
-    private int maxEnemies = 30;
+    private int maxEnemies = 30; // Maximum number of enemies
     private int aggressiveEnemyCount = 0;
     private int fixedEnemyCount = 0;
-    private List<GameObject> activeEnemies = new List<GameObject>();
-    private HashSet<Vector3> occupiedPositions = new HashSet<Vector3>(); // Track occupied spawn positions
+    private List<GameObject> activeEnemies = new();
+    private HashSet<Vector3> occupiedPositions = new();
     private Transform playerTransform;
     private PoolManager poolManager;
 
@@ -22,6 +22,11 @@ public class SpawnManager : MonoBehaviour
 
     private void Update ()
     {
+        if (Singleton.Instance.GameManagerInstance.CurrentState != GameState.GamePlay)
+        {
+            return;
+        }
+
         if (Time.time > lastSpawnTime + spawnInterval)
         {
             lastSpawnTime = Time.time;
@@ -46,12 +51,11 @@ public class SpawnManager : MonoBehaviour
 
             if (occupiedPositions.Contains(spawnPoint.position) || Vector3.Distance(spawnPoint.position, playerTransform.position) < 5f)
             {
-                continue; 
+                continue;
             }
 
-            var enemyType = ( aggressiveEnemyCount <= fixedEnemyCount ) ? SpawnObjectKey.Enemy_Aggressive : SpawnObjectKey.Enemy_Fixed;
+            var enemyType = ( aggressiveEnemyCount + 1 <= totalEnemies * 0.7f ) ? SpawnObjectKey.Enemy_Aggressive : SpawnObjectKey.Enemy_Fixed;
 
-            // Spawn the enemy
             var enemy = poolManager.Spawn(enemyType, spawnPoint.position, spawnPoint.rotation);
             if (enemy != null)
             {

@@ -12,11 +12,9 @@ public abstract class Enemy : MonoBehaviour
 
     protected virtual void Start ()
     {
-        currentHealth = maxHealth;
         playerTransform = Singleton.Instance.PlayerControllerInstance.transform;
-
         healthBarCanvas = healthBar.transform.parent;
-        UpdateHealthBar();
+        InitializeEnemy();
     }
 
     protected virtual void Update ()
@@ -25,7 +23,13 @@ public abstract class Enemy : MonoBehaviour
         {
             healthBarCanvas.LookAt(Camera.main.transform);
         }
+    }
 
+    public void InitializeEnemy ()
+    {
+        currentHealth = maxHealth;
+        isDead = false;
+        UpdateHealthBar();
     }
 
     public void TakeDamage (float amount)
@@ -54,7 +58,7 @@ public abstract class Enemy : MonoBehaviour
 
     protected virtual void Die ()
     {
-        isDead = true; 
+        isDead = true;
         Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Coins, transform.position, Quaternion.identity);
 
         var spawnManager = FindObjectOfType<SpawnManager>();

@@ -57,19 +57,27 @@ public class PoolManager : MonoBehaviour
     {
         if (objectPools.ContainsKey(key))
         {
+            GameObject objToSpawn;
+
             if (objectPools[key].Count == 0)
             {
-                var newObj = Instantiate(objectPoolItems.Find(item => item.key == key).prefab, position, rotation);
-                return newObj;
+                objToSpawn = Instantiate(objectPoolItems.Find(item => item.key == key).prefab, position, rotation);
             }
             else
             {
-                var objToSpawn = objectPools[key].Dequeue();
+                objToSpawn = objectPools[key].Dequeue();
                 objToSpawn.transform.position = position;
                 objToSpawn.transform.rotation = rotation;
                 objToSpawn.SetActive(true);
-                return objToSpawn;
             }
+
+            var enemy = objToSpawn.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.InitializeEnemy();
+            }
+
+            return objToSpawn;
         }
         else
         {

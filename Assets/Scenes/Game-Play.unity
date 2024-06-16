@@ -793,7 +793,7 @@ MonoBehaviour:
   moveSpeed: 10
   joystick: {fileID: 1415796140}
   bulletSpawnPoint: {fileID: 822453892}
-  shootingInterval: 0.15
+  shootingInterval: 0.1
 --- !u!114 &247721142
 MonoBehaviour:
   m_ObjectHideFlags: 0
