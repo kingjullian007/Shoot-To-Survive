@@ -50,27 +50,35 @@ public class PlayerController : MonoBehaviour
         }
 
         var enemies = defenseZone.GetEnemiesInZone();
-        if (enemies.Count() > 0)
+
+        // Remove dead enemies from the list
+        enemies.RemoveAll(enemy => enemy == null || enemy.GetComponent<Enemy>().isDead); // Updated here
+
+        if (enemies.Count > 0)
         {
-            if (Time.time > shootStartTime + shootingInterval)
+            // Find the closest enemy
+            var closestEnemy = enemies.OrderBy(e => Vector3.Distance(playerTransform.position, e.transform.position)).FirstOrDefault();
+
+            if (closestEnemy != null)
             {
-                // Find the closest enemy
-                var closestEnemy = enemies.OrderBy(e => Vector3.Distance(playerTransform.position, e.transform.position)).FirstOrDefault();
+                // Calculate the direction to the closest enemy
+                var directionToEnemy = ( closestEnemy.transform.position - bulletSpawnPoint.position ).normalized;
 
-                if (closestEnemy != null)
+                // Smoothly rotate the player towards the closest enemy
+                var targetRotation = Quaternion.LookRotation(directionToEnemy);
+                playerTransform.rotation = Quaternion.Slerp(playerTransform.rotation, targetRotation, Time.deltaTime * 5f);
+
+                if (Time.time > shootStartTime + shootingInterval)
                 {
-                    // Calculate the direction to the closest enemy
-                    var directionToEnemy = ( closestEnemy.transform.position - bulletSpawnPoint.position ).normalized;
-
                     // Spawn the bullet and set its direction
                     var bullet = Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullet_Player, bulletSpawnPoint.position, Quaternion.LookRotation(directionToEnemy));
                     Debug.Log("Boom");
 
                     // Optionally, you can adjust the bullet's forward direction
                     bullet.transform.forward = directionToEnemy;
-                }
 
-                shootStartTime = Time.time;
+                    shootStartTime = Time.time;
+                }
             }
         }
     }

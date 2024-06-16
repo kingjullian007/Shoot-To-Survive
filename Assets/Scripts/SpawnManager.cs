@@ -3,13 +3,14 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    [SerializeField] private List<Transform> spawnTransforms = new();
+    [SerializeField] private List<Transform> spawnTransforms = new List<Transform>();
     [SerializeField] private float spawnInterval = 5f; // Time interval between spawns
     private float lastSpawnTime;
     private int maxEnemies = 20;
     private int aggressiveEnemyCount = 0;
     private int fixedEnemyCount = 0;
-    private List<GameObject> activeEnemies = new();
+    private List<GameObject> activeEnemies = new List<GameObject>();
+    private HashSet<Vector3> occupiedPositions = new HashSet<Vector3>(); // Track occupied spawn positions
 
     private void Update ()
     {
@@ -39,6 +40,12 @@ public class SpawnManager : MonoBehaviour
             int spawnIndex = Random.Range(0, spawnTransforms.Count);
             Transform spawnPoint = spawnTransforms[spawnIndex];
 
+            // Check if the spawn point is already occupied
+            if (occupiedPositions.Contains(spawnPoint.position))
+            {
+                continue; // Skip this spawn point
+            }
+
             // Decide whether to spawn an aggressive or fixed enemy
             SpawnObjectKey enemyType = ( aggressiveEnemyCount <= fixedEnemyCount ) ? SpawnObjectKey.Enemy_Aggressive : SpawnObjectKey.Enemy_Fixed;
 
@@ -47,6 +54,7 @@ public class SpawnManager : MonoBehaviour
             if (enemy != null)
             {
                 activeEnemies.Add(enemy);
+                occupiedPositions.Add(spawnPoint.position); // Mark the spawn point as occupied
                 if (enemyType == SpawnObjectKey.Enemy_Aggressive)
                 {
                     aggressiveEnemyCount++;
@@ -73,6 +81,7 @@ public class SpawnManager : MonoBehaviour
             {
                 fixedEnemyCount--;
             }
+            occupiedPositions.Remove(enemy.transform.position); // Mark the spawn position as available
         }
     }
 }

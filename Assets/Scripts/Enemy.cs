@@ -8,6 +8,7 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] private Slider healthBar;
     protected Transform playerTransform;
     private Transform healthBarCanvas;
+    public bool isDead = false; // Changed access to protected
 
     protected virtual void Start ()
     {
@@ -32,14 +33,17 @@ public abstract class Enemy : MonoBehaviour
 
     public void TakeDamage (float amount)
     {
-        currentHealth -= amount;
-        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
-        UpdateHealthBar();
-        //Debug.Log("I am Enemy & my currentHealth: " + currentHealth);
-
-        if (currentHealth <= 0)
+        if (!isDead) // Only take damage if not already dead
         {
-            Die();
+            currentHealth -= amount;
+            currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+            UpdateHealthBar();
+            //Debug.Log("I am Enemy & my currentHealth: " + currentHealth);
+
+            if (currentHealth <= 0)
+            {
+                Die();
+            }
         }
     }
 
@@ -54,6 +58,7 @@ public abstract class Enemy : MonoBehaviour
 
     protected virtual void Die ()
     {
+        isDead = true; // Mark as dead
         // Drop coins
         Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Coins, transform.position, Quaternion.identity);
 
@@ -63,11 +68,10 @@ public abstract class Enemy : MonoBehaviour
         {
             spawnManager.RemoveEnemy(gameObject);
         }
-
+        
         // DeSpawn the enemy
         Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
     }
-
 
     // Method for specific attack behavior to be overridden by subclasses
     protected abstract void Attack ();

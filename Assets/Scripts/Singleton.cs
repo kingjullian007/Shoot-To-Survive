@@ -11,6 +11,12 @@ public class Singleton : MonoBehaviour
     private PoolManager poolManager;
     public PoolManager PoolManagerInstance => poolManager;
 
+    private ScoreCalculator scoreCalculator;
+    public ScoreCalculator ScoreCalculatorInstance => scoreCalculator;
+
+    private GameManager gameManager;
+    public GameManager GameManagerInstance => gameManager;
+
     private void Awake ()
     {
         if (Instance == null)
@@ -18,7 +24,7 @@ public class Singleton : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            InitializeComponents();
+            InitializeInstance();
         }
         else
         {
@@ -26,7 +32,7 @@ public class Singleton : MonoBehaviour
         }
     }
 
-    private void InitializeComponents ()
+    private void InitializeInstance ()
     {
 
         if (PlayerControllerInstance == null)
@@ -40,6 +46,16 @@ public class Singleton : MonoBehaviour
             //Debug.Log("PoolManager component not found on Singleton GameObject.");
             poolManager = FindObjectOfType<PoolManager>();
         }
+
+        if(ScoreCalculatorInstance == null)
+        {
+            scoreCalculator = GetComponent<ScoreCalculator>();
+        }
+
+        if(GameManagerInstance == null)
+        {
+            gameManager = GetComponent<GameManager>();
+        }
     }
 
     private void OnSceneLoaded (Scene scene, LoadSceneMode mode)
@@ -47,7 +63,7 @@ public class Singleton : MonoBehaviour
         // Reinitialize components if necessary
         if (PlayerControllerInstance == null || PoolManagerInstance == null)
         {
-            InitializeComponents();
+            InitializeInstance();
         }
     }
 
