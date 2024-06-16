@@ -63,11 +63,11 @@ public class EnemyAggressive : Enemy
                     Debug.Log("Perform melee attack");
 
                     // Optionally, reduce player health or trigger an attack animation
-                    var playerHealth = playerTransform.GetComponent<PlayerHealth>();
-                    if (playerHealth != null)
-                    {
-                        playerHealth.TakeDamage(2); // Adjust damage value as needed
-                    }
+                    //var playerHealth = playerTransform.GetComponent<PlayerHealth>();
+                    //if (playerHealth != null)
+                    //{
+                    //    playerHealth.TakeDamage(2); // Adjust damage value as needed
+                    //}
                 }
             }
         }

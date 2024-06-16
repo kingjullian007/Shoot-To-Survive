@@ -56,8 +56,18 @@ public abstract class Enemy : MonoBehaviour
     {
         // Drop coins
         Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Coins, transform.position, Quaternion.identity);
+
+        // Notify the SpawnManager to remove the enemy
+        SpawnManager spawnManager = FindObjectOfType<SpawnManager>();
+        if (spawnManager != null)
+        {
+            spawnManager.RemoveEnemy(gameObject);
+        }
+
+        // DeSpawn the enemy
         Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
     }
+
 
     // Method for specific attack behavior to be overridden by subclasses
     protected abstract void Attack ();
