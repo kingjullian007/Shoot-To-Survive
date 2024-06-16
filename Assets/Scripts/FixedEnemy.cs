@@ -4,10 +4,9 @@ public class FixedEnemy : Enemy
 {
     [SerializeField] private Transform bulletSpawnPoint;
     [SerializeField] private float shootingInterval = 0.2f;
+    [SerializeField] private float rotationSpeed = 2f; 
+    [SerializeField] private float attackRange = 15f;
     private float shootStartTime;
-    [SerializeField] private float rotationSpeed = 2f; // Speed at which the enemy rotates towards the player
-    [SerializeField] private float attackRange = 15f; // Maximum range for attacking
-
 
     protected override void Start ()
     {

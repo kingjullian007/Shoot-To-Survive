@@ -32,8 +32,8 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         Vector2 localPoint;
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(joystickBackground, eventData.position, eventData.pressEventCamera, out localPoint))
         {
-            float halfWidth = joystickBackground.sizeDelta.x / 2;
-            float halfHeight = joystickBackground.sizeDelta.y / 2;
+            var halfWidth = joystickBackground.sizeDelta.x / 2;
+            var halfHeight = joystickBackground.sizeDelta.y / 2;
             localPoint.x = Mathf.Clamp(localPoint.x, -halfWidth, halfWidth);
             localPoint.y = Mathf.Clamp(localPoint.y, -halfHeight, halfHeight);
 

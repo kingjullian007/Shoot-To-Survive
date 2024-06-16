@@ -22,13 +22,8 @@ public class Singleton : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
-
+          
             InitializeInstance();
-        }
-        else
-        {
-            Destroy(gameObject);
         }
     }
 
@@ -37,13 +32,11 @@ public class Singleton : MonoBehaviour
 
         if (PlayerControllerInstance == null)
         {
-            //Debug.Log("PlayerController component not found on Singleton GameObject.");
             playerController = FindObjectOfType<PlayerController>();
         }
 
         if (PoolManagerInstance == null)
         {
-            //Debug.Log("PoolManager component not found on Singleton GameObject.");
             poolManager = FindObjectOfType<PoolManager>();
         }
 
@@ -60,7 +53,6 @@ public class Singleton : MonoBehaviour
 
     private void OnSceneLoaded (Scene scene, LoadSceneMode mode)
     {
-        // Reinitialize components if necessary
         if (PlayerControllerInstance == null || PoolManagerInstance == null)
         {
             InitializeInstance();
@@ -69,13 +61,11 @@ public class Singleton : MonoBehaviour
 
     private void OnEnable ()
     {
-        // Subscribe to the scene loaded event
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDisable ()
     {
-        // Unsubscribe from the scene loaded event
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }

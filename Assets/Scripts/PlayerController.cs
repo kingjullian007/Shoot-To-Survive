@@ -13,7 +13,6 @@ public class PlayerController : MonoBehaviour
 
     private void Start ()
     {
-        // Caching the transform for optimization purpose
         playerTransform = transform;
         defenseZone = GetComponentInChildren<DefenseZone>();
     }
@@ -24,24 +23,18 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-        // Get input from the joystick
         var horizontalInput = joystick.Horizontal();
         var verticalInput = joystick.Vertical();
 
-        // Calculate the movement direction based on input
         var moveDirection = new Vector3(horizontalInput, 0f, verticalInput).normalized;
 
-        // Check if there is any movement input
         if (moveDirection != Vector3.zero)
         {
-            // Rotate the player to face the movement direction
             playerTransform.rotation = Quaternion.LookRotation(moveDirection);
         }
 
-        // Apply movement
         playerTransform.Translate(moveSpeed * Time.deltaTime * moveDirection, Space.World);
 
-        // Shooting mechanism
         ScanAndShoot();
     }
 
@@ -76,7 +69,6 @@ public class PlayerController : MonoBehaviour
                 {
                     // Spawn the bullet and set its direction
                     var bullet = Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullet_Player, bulletSpawnPoint.position, Quaternion.LookRotation(directionToEnemy));
-                    Debug.Log("Boom");
 
                     // Optionally, you can adjust the bullet's forward direction
                     bullet.transform.forward = directionToEnemy;

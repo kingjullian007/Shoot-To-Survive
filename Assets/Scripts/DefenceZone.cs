@@ -10,8 +10,6 @@ public class DefenseZone : MonoBehaviour
         if (other.CompareTag("EnemyAggressive") || other.CompareTag("EnemyFixed"))
         {
             enemiesInZone.Add(other.gameObject);
-            // Handle shooting bullets or other defense mechanisms
-            //Debug.Log("One enemy detected!");
         }
     }
 
@@ -20,14 +18,11 @@ public class DefenseZone : MonoBehaviour
         if (other.CompareTag("EnemyAggressive") || other.CompareTag("EnemyFixed"))
         {
             enemiesInZone.Remove(other.gameObject);
-            // Handle stopping shooting or other defense mechanisms
-            //Debug.Log("One enemy exited!");
         }
     }
 
     public List<GameObject> GetEnemiesInZone ()
     {
-        //Debug.Log("enemiesInZone: " + enemiesInZone.Count);
         return enemiesInZone;
     }
 

@@ -11,7 +11,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Button buttonQuitGame;
     [SerializeField] private TextMeshProUGUI textGamePlayCoinHUD;
     [SerializeField] private TextMeshProUGUI textGameOverCoinHUD;
-
+    [SerializeField] private TextMeshProUGUI textEnemiesKilledHUD;
 
     private GameManager gameManager;
 
@@ -58,7 +58,9 @@ public class UIController : MonoBehaviour
         PanelGameOver.SetActive(gameState == GameState.GameOver);
         if (gameState == GameState.GameOver)
         {
-            textGameOverCoinHUD.text = "Coins Collected: " + Singleton.Instance.ScoreCalculatorInstance.CoinsCollected.ToString();
+            textGameOverCoinHUD.text = "Coins Collected x " + Singleton.Instance.ScoreCalculatorInstance.CoinsCollected.ToString();
+            textEnemiesKilledHUD.text = "Enemy Defeated x " + Singleton.Instance.ScoreCalculatorInstance.EnemyKilled.ToString();
+
         }
     }
 
@@ -78,6 +80,5 @@ public class UIController : MonoBehaviour
     private void UpdateCoinHUD (int coins)
     {
         textGamePlayCoinHUD.text = "Coins: " + coins.ToString();
-        textGameOverCoinHUD.text = "Coins Collected: " + coins.ToString();
     }
 }

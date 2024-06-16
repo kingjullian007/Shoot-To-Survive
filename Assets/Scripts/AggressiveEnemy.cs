@@ -26,7 +26,8 @@ public class EnemyAggressive : Enemy
         }
         base.Update();
         FollowPlayer();
-        AttackPlayerIfClose();
+        //AttackPlayerIfClose();
+        Attack();
     }
 
     private void FollowPlayer ()
@@ -50,8 +51,16 @@ public class EnemyAggressive : Enemy
         }
     }
 
-    private void AttackPlayerIfClose ()
+    private void RotateTowardsPlayer ()
     {
+        var direction = ( playerTransform.position - transform.position ).normalized;
+        var lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * navMeshAgent.angularSpeed);
+    }
+
+    protected override void Attack () 
+    { 
+        base.Attack();
         if (playerTransform != null)
         {
             var distance = Vector3.Distance(transform.position, playerTransform.position);
@@ -63,28 +72,9 @@ public class EnemyAggressive : Enemy
                     lastAttackTime = Time.time;
                     // Trigger melee attack animation
                     animator.SetTrigger("MeleeAttack");
-                    Debug.Log("Perform melee attack");
-
-                    // Optionally, reduce player health or trigger an attack animation
-                    //var playerHealth = playerTransform.GetComponent<PlayerHealth>();
-                    //if (playerHealth != null)
-                    //{
-                    //    playerHealth.TakeDamage(2); // Adjust damage value as needed
-                    //}
                 }
             }
         }
     }
-
-    private void RotateTowardsPlayer ()
-    {
-        Vector3 direction = ( playerTransform.position - transform.position ).normalized;
-        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * navMeshAgent.angularSpeed);
-    }
-
-    protected override void Attack ()
-    {
-        // This method can be used for additional attack behaviors if needed
-    }
+    
 }
