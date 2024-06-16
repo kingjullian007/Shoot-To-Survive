@@ -8,7 +8,6 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] private Slider healthBar;
     protected Transform playerTransform;
     private Transform healthBarCanvas;
-    private DefenseZone defenseZone;
 
     protected virtual void Start ()
     {
@@ -17,9 +16,7 @@ public abstract class Enemy : MonoBehaviour
 
         // Find the HealthBarCanvas child and cache its transform
         healthBarCanvas = healthBar.transform.parent;
-
-        // Find the DefenseZone component in the player's hierarchy
-        defenseZone = Singleton.Instance.PlayerControllerInstance.GetComponentInChildren<DefenseZone>();
+        UpdateHealthBar(); // Initialize health bar
     }
 
     protected virtual void Update ()
@@ -36,20 +33,22 @@ public abstract class Enemy : MonoBehaviour
     public void TakeDamage (float amount)
     {
         currentHealth -= amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+        UpdateHealthBar();
+        Debug.Log("I am Enemy & my currentHealth: " + currentHealth);
+
         if (currentHealth <= 0)
         {
             Die();
         }
-        UpdateHealthBar();
-        Debug.Log("I am Enemy & my currentHealth: " + currentHealth);
     }
 
     private void UpdateHealthBar ()
     {
         if (healthBar != null)
         {
-            healthBar.value = currentHealth / maxHealth;
-            Mathf.Clamp(healthBar.value, 0f, 1f);
+            var healthPercentage = currentHealth / maxHealth * 100f;
+            healthBar.value = Mathf.Clamp(healthPercentage, 0f, maxHealth);
         }
     }
 
@@ -57,13 +56,6 @@ public abstract class Enemy : MonoBehaviour
     {
         // Drop coins
         Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Coins, transform.position, Quaternion.identity);
-
-        // Remove from the defense zone list
-        if (defenseZone != null)
-        {
-            defenseZone.RemoveEnemyFromZone(gameObject);
-        }
-
         Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
     }
 

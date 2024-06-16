@@ -35,7 +35,7 @@ public class BulletController : MonoBehaviour
             var player = other.GetComponent<PlayerHealth>();
             if (player != null)
             {
-                player.TakeDamage((int)damage);
+                player.TakeDamage(damage);
             }
             Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
         }

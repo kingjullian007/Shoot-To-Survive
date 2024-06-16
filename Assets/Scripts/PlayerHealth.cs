@@ -3,12 +3,12 @@ using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [SerializeField] private int maxHealth = 100;
-    private int currentHealth;
+    [SerializeField] private float maxHealth = 100;
+    private float currentHealth;
     [SerializeField] private Slider healthSlider;
 
-    public int MaxHealth { get => maxHealth; private set => maxHealth = value; }
-    public int CurrentHealth { get => currentHealth; private set => currentHealth = value; }
+    public float MaxHealth { get => maxHealth; private set => maxHealth = value; }
+    public float CurrentHealth { get => currentHealth; private set => currentHealth = value; }
 
     private void Start ()
     {
@@ -21,7 +21,7 @@ public class PlayerHealth : MonoBehaviour
         CurrentHealth = MaxHealth;
     }
 
-    public void TakeDamage (int damage)
+    public void TakeDamage (float damage)
     {
         CurrentHealth -= damage;
         CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
@@ -31,7 +31,6 @@ public class PlayerHealth : MonoBehaviour
         {
             Die();
         }
-        Debug.Log("I am Player & my currentHealth: " + currentHealth);
 
     }
 
@@ -39,9 +38,8 @@ public class PlayerHealth : MonoBehaviour
     {
         if (healthSlider != null)
         {
-            // Calculate normalized value for the slider
-            float normalizedHealth = (float)CurrentHealth / MaxHealth;
-            healthSlider.value = normalizedHealth;
+            var healthPercentage = currentHealth / maxHealth * 100f;
+            healthSlider.value = Mathf.Clamp(healthPercentage, 0f, maxHealth);
         }
     }
 

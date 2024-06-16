@@ -1223,6 +1223,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 189744215747998031, guid: d08d786d2a23f534591899af5c61936c, type: 3}
+      propertyPath: m_Direction
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 189744215747998031, guid: d08d786d2a23f534591899af5c61936c, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 915718382989405007, guid: d08d786d2a23f534591899af5c61936c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1274,6 +1282,14 @@ PrefabInstance:
     - target: {fileID: 4790463956870462799, guid: d08d786d2a23f534591899af5c61936c, type: 3}
       propertyPath: m_Name
       value: EnemyFixed
+      objectReference: {fileID: 0}
+    - target: {fileID: 4804110201117013683, guid: d08d786d2a23f534591899af5c61936c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7804934154195481806, guid: d08d786d2a23f534591899af5c61936c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 4.999995
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2132,6 +2148,10 @@ PrefabInstance:
     - target: {fileID: 3675827056591402623, guid: e765b1afe4e0a864a95b9948440f3ac5, type: 3}
       propertyPath: m_Direction
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3675827056591402623, guid: e765b1afe4e0a864a95b9948440f3ac5, type: 3}
+      propertyPath: m_Interactable
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3675827056591402623, guid: e765b1afe4e0a864a95b9948440f3ac5, type: 3}
       propertyPath: m_WholeNumbers
