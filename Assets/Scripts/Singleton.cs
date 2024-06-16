@@ -31,13 +31,13 @@ public class Singleton : MonoBehaviour
 
         if (PlayerControllerInstance == null)
         {
-            Debug.Log("PlayerController component not found on Singleton GameObject.");
+            //Debug.Log("PlayerController component not found on Singleton GameObject.");
             playerController = FindObjectOfType<PlayerController>();
         }
 
         if (PoolManagerInstance == null)
         {
-            Debug.Log("PoolManager component not found on Singleton GameObject.");
+            //Debug.Log("PoolManager component not found on Singleton GameObject.");
             poolManager = FindObjectOfType<PoolManager>();
         }
     }

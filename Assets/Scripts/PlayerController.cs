@@ -5,12 +5,11 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private Joystick joystick;
-    private Transform playerTransform;
-    private DefenseZone defenseZone;
     [SerializeField] private Transform bulletSpawnPoint;
     [SerializeField] private float shootingInterval = 0.5f;
     private float shootStartTime;
-    [SerializeField] private float bulletSpeed;
+    private Transform playerTransform;
+    private DefenseZone defenseZone;
 
     private void Start ()
     {
@@ -44,21 +43,20 @@ public class PlayerController : MonoBehaviour
 
     private void ScanAndShoot ()
     {
-        if(defenseZone == null)
+        if (defenseZone == null)
         {
             Debug.Log("Defence zone not detected! Try adding one first to the player");
             return;
         }
 
-        if(defenseZone.GetEnemiesInZone().Count()>0)
+        if (defenseZone.GetEnemiesInZone().Count() > 0)
         {
-            if(Time.time > shootStartTime + shootingInterval)
+            if (Time.time > shootStartTime + shootingInterval)
             {
                 shootStartTime = Time.time;
-                Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullets, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+                Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullet_Player, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
                 Debug.Log("Boom");
             }
         }
     }
 }
-

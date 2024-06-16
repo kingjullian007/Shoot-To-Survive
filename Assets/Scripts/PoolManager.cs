@@ -3,9 +3,11 @@ using UnityEngine;
 
 public enum SpawnObjectKey
 {
-    Bullets,
+    Bullet_Player,
+    Bullet_Enemy,
     Enemy_Aggressive,
-    Enemy_Fixed
+    Enemy_Fixed,
+    Coins
 }
 
 [System.Serializable]
