@@ -107,10 +107,6 @@ public class Spawn
         {
             occupiedPositions.Remove(oldPosition);
         }
-
-        // Optionally, add the new position to occupied positions if necessary
-        // This depends on how you want to track moving enemies
-        // occupiedPositions.Add(newPosition);
     }
 
     private void InitializeEnemy (GameObject enemy)
