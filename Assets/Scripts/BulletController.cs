@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class BulletController : MonoBehaviour, IPoolable
 {
-    [SerializeField] private float speed = 25f;
-    [SerializeField]  private float damage = 25f;
     private Transform bulletTransform;
+    private float speed = 25f;
+    private float damage = 25f;
 
     public float Damage => damage;
 
@@ -31,17 +31,12 @@ public class BulletController : MonoBehaviour, IPoolable
 
     private void HandleCollision (Collider other)
     {
-        if (other.CompareTag("EnemyAggressive") || other.CompareTag("EnemyFixed") || other.CompareTag("Player"))
+        if (other.gameObject.TryGetComponent<IDamageable>(out var damageable))
         {
-            var damageable = other.GetComponent<IDamageable>();
-            if (damageable != null)
-            {
-                damageable.TakeDamage(damage);
-                DeSpawn();
-            }
+            damageable.TakeDamage(damage);
+            DeSpawn();
         }
-
-        if (other.CompareTag("DeadEnd"))
+        else if (other.CompareTag("DeadEnd"))
         {
             DeSpawn();
         }
@@ -53,4 +48,3 @@ public class BulletController : MonoBehaviour, IPoolable
         pool.DeSpawn(gameObject);
     }
 }
-
