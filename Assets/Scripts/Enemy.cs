@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class Enemy : MonoBehaviour
+public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
 {
     [SerializeField] protected float maxHealth = 100f;
     protected float currentHealth;
@@ -9,11 +9,13 @@ public abstract class Enemy : MonoBehaviour
     protected Transform playerTransform;
     private Transform healthBarCanvas;
     public bool isDead = false;
+    private Pool pool;
 
     protected virtual void Start ()
     {
         playerTransform = Singleton.Instance.PlayerControllerInstance.transform;
         healthBarCanvas = healthBar.transform.parent;
+        pool = Singleton.Instance.PoolManagerInstance.poolInstance;
         InitializeEnemy();
     }
 
@@ -59,7 +61,7 @@ public abstract class Enemy : MonoBehaviour
     protected virtual void Die ()
     {
         isDead = true;
-        Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Coins, transform.position, Quaternion.identity);
+        pool.Spawn(SpawnObjectKey.Coins, transform.position, Quaternion.identity);
 
         var spawnManager = FindObjectOfType<SpawnManager>();
         if (spawnManager != null)
@@ -67,8 +69,14 @@ public abstract class Enemy : MonoBehaviour
             spawnManager.SpawnInstance.RemoveEnemy(gameObject);
         }
         GameEvents.EnemyDied?.Invoke();
-        Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
+        //pool.DeSpawn(gameObject);
+        DeSpawn();
     }
 
     protected virtual void Attack () { }
+
+    public void DeSpawn ()
+    {
+        pool.DeSpawn(gameObject);
+    }
 }

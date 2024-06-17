@@ -1,49 +1,50 @@
 using UnityEngine;
 
-public class BulletController : MonoBehaviour
+public class BulletController : MonoBehaviour, IPoolable
 {
-    [SerializeField] private float speed = 25f;
-    [SerializeField] private float damage = 25f;
-    public float Damage => damage;
-
     private Transform bulletTransform;
+    private float speed = 25f;
+    private float damage = 25f;
+
+    public float Damage => damage;
 
     private void Start ()
     {
-        bulletTransform = GetComponent<Transform>();
+        bulletTransform = transform;
     }
 
     private void Update ()
     {
+        MoveBullet();
+    }
+
+    private void MoveBullet ()
+    {
+        // Move the bullet along its own forward direction
         bulletTransform.Translate(speed * Time.deltaTime * bulletTransform.forward, Space.World);
     }
 
     private void OnTriggerEnter (Collider other)
     {
-        if (other.CompareTag("EnemyAggressive") || other.CompareTag("EnemyFixed"))
-        {
-            var enemy = other.GetComponent<Enemy>();
-            if (enemy != null)
-            {
-                enemy.TakeDamage(damage);
-            }
-            Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
-        }
-       
-        else if (other.CompareTag("Player"))
-        {
-            var player = other.GetComponent<PlayerHealth>();
-            if (player != null)
-            {
-                player.TakeDamage(damage);
-            }
-            Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
-        }
+        HandleCollision(other);
+    }
 
+    private void HandleCollision (Collider other)
+    {
+        if (other.gameObject.TryGetComponent<IDamageable>(out var damageable))
+        {
+            damageable.TakeDamage(damage);
+            DeSpawn();
+        }
         else if (other.CompareTag("DeadEnd"))
         {
-            Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
+            DeSpawn();
         }
+    }
 
+    public void DeSpawn ()
+    {
+        var pool = Singleton.Instance.PoolManagerInstance.poolInstance;
+        pool.DeSpawn(gameObject);
     }
 }

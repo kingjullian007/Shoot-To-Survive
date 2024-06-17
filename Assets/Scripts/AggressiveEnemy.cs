@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyAggressive : Enemy
+public class EnemyAggressive : Enemy, IPoolable
 {
     [SerializeField] private float stopDistance = 2f; // Distance at which the enemy stops and attacks
     [SerializeField] private float attackInterval = 1f; // Time between attacks
@@ -76,5 +76,4 @@ public class EnemyAggressive : Enemy
             }
         }
     }
-    
 }

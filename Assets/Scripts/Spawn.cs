@@ -45,7 +45,7 @@ public class Spawn
             // Randomly decide the type of enemy to spawn
             var enemyType = ( Random.value < 0.5f ) ? SpawnObjectKey.Enemy_Aggressive : SpawnObjectKey.Enemy_Fixed;
 
-            var enemy = poolManager.Spawn(enemyType, spawnPoint.position, spawnPoint.rotation);
+            var enemy = poolManager.poolInstance.Spawn(enemyType, spawnPoint.position, spawnPoint.rotation);
             if (enemy != null)
             {
                 InitializeEnemy(enemy); // Initialize the enemy's health and state
@@ -81,7 +81,7 @@ public class Spawn
         if (activeEnemies.Contains(enemy))
         {
             activeEnemies.Remove(enemy);
-            poolManager.DeSpawn(enemy);
+            poolManager.poolInstance.DeSpawn(enemy);
 
             // Unsubscribe from position change events if applicable
             var enemyMovement = enemy.GetComponent<EnemyMovement>();

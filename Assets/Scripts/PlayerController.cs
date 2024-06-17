@@ -68,7 +68,7 @@ public class PlayerController : MonoBehaviour
                 if (Time.time > shootStartTime + shootingInterval)
                 {
                     // Spawn the bullet and set its direction
-                    var bullet = Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullet_Player, bulletSpawnPoint.position, Quaternion.LookRotation(directionToEnemy));
+                    var bullet = Singleton.Instance.PoolManagerInstance.poolInstance.Spawn(SpawnObjectKey.Bullet_Player, bulletSpawnPoint.position, Quaternion.LookRotation(directionToEnemy));
 
                     // Optionally, you can adjust the bullet's forward direction
                     bullet.transform.forward = directionToEnemy;

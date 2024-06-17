@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class FixedEnemy : Enemy
+public class FixedEnemy : Enemy, IPoolable
 {
     [SerializeField] private Transform bulletSpawnPoint;
     [SerializeField] private float shootingInterval = 0.2f;
@@ -51,6 +51,6 @@ public class FixedEnemy : Enemy
 
     protected override void Attack ()
     {
-        Singleton.Instance.PoolManagerInstance.Spawn(SpawnObjectKey.Bullet_Enemy, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+        Singleton.Instance.PoolManagerInstance.poolInstance.Spawn(SpawnObjectKey.Bullet_Enemy, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
     }
 }
