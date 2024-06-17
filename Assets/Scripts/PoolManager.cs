@@ -1,23 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum SpawnObjectKey
-{
-    Bullet_Player,
-    Bullet_Enemy,
-    Enemy_Aggressive,
-    Enemy_Fixed,
-    Coins
-}
-
-[System.Serializable]
-public class ObjectPoolItem
-{
-    public SpawnObjectKey key;
-    public GameObject prefab;
-    public int poolSize;
-}
-
 public class PoolManager : MonoBehaviour
 {
     [SerializeField] private List<ObjectPoolItem> objectPoolItems;
@@ -71,8 +54,7 @@ public class PoolManager : MonoBehaviour
                 objToSpawn.SetActive(true);
             }
 
-            var enemy = objToSpawn.GetComponent<Enemy>();
-            if (enemy != null)
+            if (objToSpawn.TryGetComponent<Enemy>(out var enemy))
             {
                 enemy.InitializeEnemy();
             }

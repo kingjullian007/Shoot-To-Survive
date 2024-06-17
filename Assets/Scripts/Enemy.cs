@@ -64,7 +64,7 @@ public abstract class Enemy : MonoBehaviour
         var spawnManager = FindObjectOfType<SpawnManager>();
         if (spawnManager != null)
         {
-            spawnManager.RemoveEnemy(gameObject);
+            spawnManager.SpawnInstance.RemoveEnemy(gameObject);
         }
         GameEvents.EnemyDied?.Invoke();
         Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
