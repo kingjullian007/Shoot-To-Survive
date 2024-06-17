@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class Enemy : MonoBehaviour
+public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
 {
     [SerializeField] protected float maxHealth = 100f;
     protected float currentHealth;
@@ -69,8 +69,14 @@ public abstract class Enemy : MonoBehaviour
             spawnManager.SpawnInstance.RemoveEnemy(gameObject);
         }
         GameEvents.EnemyDied?.Invoke();
-        pool.DeSpawn(gameObject);
+        //pool.DeSpawn(gameObject);
+        DeSpawn();
     }
 
     protected virtual void Attack () { }
+
+    public void DeSpawn ()
+    {
+        pool.DeSpawn(gameObject);
+    }
 }

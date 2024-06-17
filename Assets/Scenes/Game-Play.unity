@@ -1489,7 +1489,7 @@ MonoBehaviour:
     poolSize: 15
   - key: 4
     prefab: {fileID: 7285849363148861246, guid: e75d66f18c0bb1b4e83341cfa730b3fb, type: 3}
-    poolSize: 10
+    poolSize: 0
 --- !u!4 &407513821
 Transform:
   m_ObjectHideFlags: 0

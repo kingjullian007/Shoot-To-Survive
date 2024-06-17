@@ -8,7 +8,7 @@ public class MeeleAttack : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            var player = other.GetComponent<PlayerHealth>();
+            var player = other.GetComponent<IDamageable>();
             if (player != null)
             {
                 player.TakeDamage(damage);

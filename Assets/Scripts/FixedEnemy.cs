@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class FixedEnemy : Enemy
+public class FixedEnemy : Enemy, IPoolable
 {
     [SerializeField] private Transform bulletSpawnPoint;
     [SerializeField] private float shootingInterval = 0.2f;
