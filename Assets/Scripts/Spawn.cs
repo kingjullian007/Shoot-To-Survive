@@ -10,15 +10,16 @@ public class Spawn
     private HashSet<Vector3> occupiedPositions;
     private Transform playerTransform;
 
-    public Spawn(int maxEnemies, PoolManager poolManager, List<Transform> spawnTransforms, Transform playerTransform)
+    public Spawn (int maxEnemies, PoolManager poolManager, List<Transform> spawnTransforms, Transform playerTransform)
     {
         this.maxEnemies = maxEnemies;
         this.poolManager = poolManager;
         this.spawnTransforms = spawnTransforms;
         this.playerTransform = playerTransform;
-        activeEnemies = new();
-        occupiedPositions = new();
+        activeEnemies = new List<GameObject>();
+        occupiedPositions = new HashSet<Vector3>();
     }
+
     public void SpawnEnemies ()
     {
         var totalEnemies = activeEnemies.Count;
@@ -41,32 +42,24 @@ public class Spawn
                 break;
             }
 
-            // Determine the ratio of aggressive to fixed enemies
-            var aggressiveEnemyCount = activeEnemies.FindAll(e => e.CompareTag("EnemyAggressive")).Count;
-            var fixedEnemyCount = activeEnemies.FindAll(e => e.CompareTag("EnemyFixed")).Count;
-            var aggressiveEnemyRatio = (float)aggressiveEnemyCount / maxEnemies;
-            var fixedEnemyRatio = (float)fixedEnemyCount / maxEnemies;
-
-            // Decide the type of enemy to spawn based on the ratios
-            SpawnObjectKey enemyType;
-            if (aggressiveEnemyRatio < 0.7f && fixedEnemyRatio < 0.3f)
-            {
-                enemyType = ( Random.value < 0.7f ) ? SpawnObjectKey.Enemy_Aggressive : SpawnObjectKey.Enemy_Fixed;
-            }
-            else if (aggressiveEnemyRatio >= 0.7f)
-            {
-                enemyType = SpawnObjectKey.Enemy_Fixed;
-            }
-            else
-            {
-                enemyType = SpawnObjectKey.Enemy_Aggressive;
-            }
+            // Randomly decide the type of enemy to spawn
+            var enemyType = ( Random.value < 0.5f ) ? SpawnObjectKey.Enemy_Aggressive : SpawnObjectKey.Enemy_Fixed;
 
             var enemy = poolManager.Spawn(enemyType, spawnPoint.position, spawnPoint.rotation);
             if (enemy != null)
             {
+                InitializeEnemy(enemy); // Initialize the enemy's health and state
                 activeEnemies.Add(enemy);
                 occupiedPositions.Add(spawnPoint.position);
+
+                // Ensure we track the enemy movement
+                var enemyMovement = enemy.GetComponent<EnemyMovement>();
+                if (enemyMovement == null)
+                {
+                    enemyMovement = enemy.AddComponent<EnemyMovement>();
+                }
+
+                enemyMovement.OnPositionChanged += HandleEnemyPositionChanged;
             }
         }
     }
@@ -89,10 +82,43 @@ public class Spawn
         {
             activeEnemies.Remove(enemy);
             poolManager.DeSpawn(enemy);
-            occupiedPositions.Remove(enemy.transform.position);
+
+            // Unsubscribe from position change events if applicable
+            var enemyMovement = enemy.GetComponent<EnemyMovement>();
+            if (enemyMovement != null)
+            {
+                enemyMovement.OnPositionChanged -= HandleEnemyPositionChanged;
+            }
+
+            // Ensure occupied positions are updated when enemies are removed
+            if (occupiedPositions.Contains(enemy.transform.position))
+            {
+                occupiedPositions.Remove(enemy.transform.position);
+            }
 
             // Debug log to track enemy removal
             Debug.Log($"Removed {enemy.name}, Active Enemies: {activeEnemies.Count}");
+        }
+    }
+
+    private void HandleEnemyPositionChanged (GameObject enemy, Vector3 oldPosition, Vector3 newPosition)
+    {
+        if (occupiedPositions.Contains(oldPosition))
+        {
+            occupiedPositions.Remove(oldPosition);
+        }
+
+        // Optionally, add the new position to occupied positions if necessary
+        // This depends on how you want to track moving enemies
+        // occupiedPositions.Add(newPosition);
+    }
+
+    private void InitializeEnemy (GameObject enemy)
+    {
+        var enemyComponent = enemy.GetComponent<Enemy>();
+        if (enemyComponent != null)
+        {
+            enemyComponent.InitializeEnemy();
         }
     }
 }
