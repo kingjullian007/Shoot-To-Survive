@@ -8,9 +8,12 @@ public class BulletController : MonoBehaviour
 
     private Transform bulletTransform;
 
+    private Pool pool;
+
     private void Start ()
     {
         bulletTransform = GetComponent<Transform>();
+        pool = Singleton.Instance.PoolManagerInstance.poolInstance;
     }
 
     private void Update ()
@@ -27,7 +30,7 @@ public class BulletController : MonoBehaviour
             {
                 enemy.TakeDamage(damage);
             }
-            Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
+            pool.DeSpawn(gameObject);
         }
        
         else if (other.CompareTag("Player"))
@@ -37,12 +40,12 @@ public class BulletController : MonoBehaviour
             {
                 player.TakeDamage(damage);
             }
-            Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
+            pool.DeSpawn(gameObject);
         }
 
         else if (other.CompareTag("DeadEnd"))
         {
-            Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
+            pool.DeSpawn(gameObject);
         }
 
     }

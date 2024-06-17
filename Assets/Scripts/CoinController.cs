@@ -8,7 +8,7 @@ public class CoinController : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             GameEvents.CoinCollected?.Invoke(1);
-            Singleton.Instance.PoolManagerInstance.DeSpawn(gameObject);
+            Singleton.Instance.PoolManagerInstance.poolInstance.DeSpawn(gameObject);
         }
     }
 }
